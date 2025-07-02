@@ -143,7 +143,7 @@ mesAbreviado = mesAbreviado.replace(".", "");
     dados.forEach(pessoa => {
       container.innerHTML += `
         <div class="container">
-          <img class="profile-img" src="${pessoa.foto || 'Default.jpg'}" alt="Foto de ${pessoa.nome}" />
+          <img class="profile-img" src="${pessoa.foto || 'notfound.jpg'}" alt="Foto de ${pessoa.nome}" />
           <div class="info">
               <p><strong>Nome:</strong> ${pessoa.nome}</p>
               <p><strong>Final telefone:</strong> ${pessoa.final_telefone}</p>
