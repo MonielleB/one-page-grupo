@@ -132,7 +132,8 @@ mesAbreviado = mesAbreviado.replace(".", "");
         aniversario: formatarDataAniversario(row.c[3]) || "",
         idade: row.c[4]?.v || "",
         estado_civil: row.c[5]?.v || "",
-        instagram: row.c[6]?.v || ""
+        instagram: row.c[6]?.v || "",
+        foto: row.c[7]?.v || ""
       };
     });
 
@@ -140,9 +141,10 @@ mesAbreviado = mesAbreviado.replace(".", "");
     container.innerHTML = "";
 
     dados.forEach(pessoa => {
+        console.log("Foto de", pessoa.nome, "=>", pessoa.foto);
       container.innerHTML += `
         <div class="container">
-          <img class="profile-img" src="Moni.jpg" alt="Foto de Perfil" />
+          <img class="profile-img" src="${pessoa.foto || 'Default.jpg'}" alt="Foto de ${pessoa.nome}" />
           <div class="info">
               <p><strong>Nome:</strong> ${pessoa.nome}</p>
               <p><strong>Final telefone:</strong> ${pessoa.final_telefone}</p>
