@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Contatos Dinâmicos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap; /* Permite que os elementos quebrem linha */
+      justify-content: center; /* Centraliza os blocos */
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #ccc;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #444;
+      text-align: center;
+      font-size: 1.5em;
+    }
+    .info {
+      margin-bottom: 20px;
+    }
+    .info p {
+      margin: 5px 0;
+      word-break: break-word; /* Quebra palavras longas */
+    }
+    .links a {
+      display: inline-block;
+      margin: 5px;
+      text-decoration: none;
+      color: #fff;
+      background-color: #0077b6;
+      padding: 10px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .links a:hover {
+      background-color: #023e8a;
+    }
+    /* Responsividade extra */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 15px;
+      }
+      .profile-img {
+        width: 100px;
+        height: 100px;
+      }
+      h1 {
+        font-size: 1.3em;
+      }
+      .links a {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="container">Carregando...</div>
+  <script>
+function formatarDataAniversario(celda) {
+  if (!celda) return "";
+
+  let data;
+
+  // Caso seja objeto date do Google
+  if (typeof celda === "object" && celda.hasOwnProperty("f") && celda.hasOwnProperty("v")) {
+    // celda.v é algo como Date(1980,10,5)
+    const match = /Date\((\d+),(\d+),(\d+)\)/.exec(celda.v);
+    if (match) {
+      const ano = parseInt(match[1]);
+      const mes = parseInt(match[2]);
+      const dia = parseInt(match[3]);
+      data = new Date(ano, mes, dia);
+    }
+  } else if (typeof celda === "string") {
+    // Tenta converter string
+    data = new Date(celda);
+  } else {
+    data = new Date(celda);
+  }
+
+  if (!data || isNaN(data)) return "";
+
+  const dia = String(data.getDate()).padStart(2, "0");
+let mesAbreviado = data.toLocaleString("pt-BR", { month: "short" });
+mesAbreviado = mesAbreviado.replace(".", "");
+  return `${dia}/${mesAbreviado}`;
+}
+  async function carregarDados() {
+    const sheetId = "17gbuKhPzYDgZQXzhQA8mAynZUn_UPNod6lHu5p9Pupk";
+    const sheetName = "Página1";
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+    const res = await fetch(url);
+    const texto = await res.text();
+    const json = JSON.parse(texto.substr(47).slice(0, -2));
+
+    const dados = json.table.rows.map(row => {
+      return {
+        nome: row.c[0]?.v || "",
+        final_telefone: row.c[1]?.v || "",
+        cidade: row.c[2]?.v || "",
+        aniversario: formatarDataAniversario(row.c[3]) || "",
+        idade: row.c[4]?.v || "",
+        estado_civil: row.c[5]?.v || "",
+        instagram: row.c[6]?.v || ""
+      };
+    });
+
+    const container = document.getElementById("container");
+    container.innerHTML = "";
+
+    dados.forEach(pessoa => {
+      container.innerHTML += `
+        <div class="container">
+          <img class="profile-img" src="Moni.jpg" alt="Foto de Perfil" />
+          <div class="info">
+              <p><strong>Nome:</strong> ${pessoa.nome}</p>
+              <p><strong>Final telefone:</strong> ${pessoa.final_telefone}</p>
+              <p><strong>Cidade:</strong> ${pessoa.cidade}</p>
+              <p><strong>Aniversário:</strong> ${pessoa.aniversario}</p>
+              <p><strong>Idade:</strong> ${pessoa.idade}</p>
+              <p><strong>Estado civil:</strong> ${pessoa.estado_civil}</p>
+              <p><strong>Instagram:</strong> <a href="https://instagram.com/${pessoa.instagram.replace('@', '')}" target="_blank">${pessoa.instagram}</a></p>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  carregarDados();
+</script>
+</body>
+</html>
