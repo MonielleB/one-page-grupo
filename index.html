@@ -62,7 +62,17 @@
     .links a:hover {
       background-color: #023e8a;
     }
-    /* Responsividade extra */
+    /* Responsividade extra para telas pequenas */
+    @media (max-width: 900px) {
+        .container {
+            flex: 1 1 calc(50% - 40px); /* 2 por linha */
+        }
+    }
+    @media (max-width: 600px) {
+        .container {
+            flex: 1 1 100%; /* 1 por linha */
+        }
+    }
     @media (max-width: 480px) {
       body {
         padding: 10px;
